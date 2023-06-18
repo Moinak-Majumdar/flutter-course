@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+final randomizer =
+    Random(); //hl2 this will prevent to create a new random object every time state is changed.
+
 class DiceRoller extends StatefulWidget {
   const DiceRoller({super.key});
 
@@ -14,7 +17,7 @@ class _DiceRollerState extends State<DiceRoller> {
   int diceImgState = 1;
   void rollDice() {
     setState(() {
-      int genState = Random().nextInt(6) + 1;
+      int genState = randomizer.nextInt(6) + 1;
       if (genState == diceImgState) {
         rollDice();
       } else {
