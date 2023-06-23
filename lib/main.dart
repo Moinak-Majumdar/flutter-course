@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:answer_me/home_page.dart';
+import 'package:answer_me/app.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
               end: Alignment.bottomRight,
             ),
           ),
-          child: const Center(child: HomePage()),
+          child: const App(),
         ),
       ),
     );

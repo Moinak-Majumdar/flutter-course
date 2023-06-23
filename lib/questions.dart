@@ -5,6 +5,8 @@ class Questions extends StatelessWidget {
 
   @override
   Widget build(context) {
-    return const Text('Stateless');
+    return const Center(
+      child: Text('Questions page'),
+    );
   }
 }
