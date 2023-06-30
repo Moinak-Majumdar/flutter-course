@@ -3,17 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:answer_me/utils/option_button.dart';
 import 'package:answer_me/data/qus_library.dart';
 
-class Questions extends StatelessWidget {
-  const Questions({super.key});
-
-  @override
-  Widget build(context) {
-    return const QuestionScreen();
-  }
-}
-
 class QuestionScreen extends StatefulWidget {
-  const QuestionScreen({super.key});
+  const QuestionScreen({required this.onSelectAns, super.key});
+
+  final void Function(String ans) onSelectAns;
 
   @override
   State<QuestionScreen> createState() {
@@ -23,13 +16,10 @@ class QuestionScreen extends StatefulWidget {
 
 class _QuestionScreenState extends State<QuestionScreen> {
   var qusIndex = 0;
-  void userAns() {
+  void userAns(String choice) {
+    widget.onSelectAns(choice);
     setState(() {
-      if (qusIndex >= qusLibrary.length) {
-        qusIndex = 0;
-      } else {
-        qusIndex++;
-      }
+      qusIndex++;
     });
   }
 
@@ -44,6 +34,15 @@ class _QuestionScreenState extends State<QuestionScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
+            'Question : ${qusIndex + 1}',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.montserrat(
+                color: Colors.white70, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+          Text(
             currentQus.question,
             style: GoogleFonts.comicNeue(
                 fontSize: 26, color: Colors.white, fontWeight: FontWeight.bold),
@@ -52,9 +51,16 @@ class _QuestionScreenState extends State<QuestionScreen> {
           const SizedBox(
             height: 30,
           ),
-          ...currentQus.shuffledOptions().map((curr) {
-            return OptionButton(option: curr, onTap: userAns);
-          })
+          ...currentQus.shuffledOptions().map(
+            (option) {
+              return OptionButton(
+                option: option,
+                onTap: () {
+                  userAns(option);
+                },
+              );
+            },
+          ),
         ],
       ),
     );
