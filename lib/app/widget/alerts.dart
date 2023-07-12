@@ -11,7 +11,7 @@ class FailedAlert extends StatelessWidget {
     return AlertDialog(
       title: Text(
         'Invalid input',
-        style: GoogleFonts.lato(fontSize: 18, fontWeight: FontWeight.w600),
+        style: Theme.of(context).textTheme.bodyLarge,
       ),
       content: const Text(
           'Please make sure valid title, amount, date and category was entered...'),
@@ -20,7 +20,7 @@ class FailedAlert extends StatelessWidget {
           onPressed: () {
             Navigator.pop(buildCtx);
           },
-          child: const Text('Okay'),
+          child: const Text('OKAY'),
         ),
       ],
     );

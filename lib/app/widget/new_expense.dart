@@ -135,10 +135,10 @@ class GetTitle extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           hintText: 'Expense short description.',
-          hintStyle: TextStyle(fontSize: 12, color: Colors.black45),
-          label: Text('Title'),
+          hintStyle: Theme.of(context).textTheme.bodySmall,
+          label: const Text('Title'),
           // border: OutlineInputBorder(),
         ),
         maxLength: 50,
@@ -196,11 +196,11 @@ class GetAmount extends StatelessWidget {
   Widget build(context) {
     return Expanded(
       child: TextField(
-        decoration: const InputDecoration(
-          label: Text('Amount'),
-          border: OutlineInputBorder(),
+        decoration: InputDecoration(
+          label: const Text('Amount'),
+          border: const OutlineInputBorder(),
           helperText: 'Amount you have spend.',
-          helperStyle: TextStyle(fontSize: 12, color: Colors.black45),
+          helperStyle: Theme.of(context).textTheme.bodySmall,
           prefixText: '₹ ',
         ),
         keyboardType: TextInputType.number,
@@ -211,10 +211,11 @@ class GetAmount extends StatelessWidget {
 }
 
 class PickCategory extends StatelessWidget {
-  const PickCategory(
-      {super.key,
-      required this.selectedCategory,
-      required this.changeCategory});
+  const PickCategory({
+    super.key,
+    required this.selectedCategory,
+    required this.changeCategory,
+  });
 
   final Category selectedCategory;
   final void Function(Category v) changeCategory;
@@ -224,20 +225,31 @@ class PickCategory extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Select category',
-          style: TextStyle(fontSize: 12, color: Colors.black45),
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         DropdownButton(
           value: selectedCategory,
           items: Category.values
               .map(
                 (e) => DropdownMenuItem(
-                  value: e,
-                  child: Text(
-                    e.name.toUpperCase(),
-                  ),
-                ),
+                    value: e,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          e.name.toUpperCase(),
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          categoryIcons[e],
+                          color: Theme.of(context).iconTheme.color,
+                          size: 16,
+                        ),
+                      ],
+                    )),
               )
               .toList(),
           onChanged: (values) {

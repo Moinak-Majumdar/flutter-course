@@ -22,6 +22,7 @@ enum Category {
   houseRent,
   internet,
   leisure,
+  savings,
   shopping,
   study,
   travel,
@@ -42,7 +43,8 @@ const categoryIcons = {
   Category.gas: Icons.local_gas_station_rounded,
   Category.drinks: Icons.local_bar_rounded,
   Category.internet: Icons.http_rounded,
-  Category.gym: Icons.fitness_center_outlined
+  Category.gym: Icons.fitness_center_outlined,
+  Category.savings: Icons.account_balance_rounded,
 };
 
 class Expense {
@@ -58,4 +60,26 @@ class Expense {
   final double amount;
   final DateTime date;
   final Category category;
+}
+
+class ExpenseBucket {
+  const ExpenseBucket({required this.category, required this.expenses});
+
+  ExpenseBucket.forCategory(List<Expense> allExpenses, this.category)
+      : expenses = allExpenses
+            .where((expense) => expense.category == category)
+            .toList();
+
+  final Category category;
+  final List<Expense> expenses;
+
+  double get totalExpense {
+    double total = 0;
+
+    for (final e in expenses) {
+      total += e.amount;
+    }
+
+    return total;
+  }
 }

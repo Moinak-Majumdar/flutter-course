@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:kharcha/app/widget/expenses_list.dart';
 import 'package:kharcha/app/widget/new_expense.dart';
 import 'package:kharcha/models/expense.dart';
 // import 'package:kharcha/data/dataList.dart';
+import 'package:kharcha/app/widget/chart/chart.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -17,11 +17,21 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   final List<Expense> _registeredExpenses = [];
 
-  void _showModal() {
+  void _addExpenseModal() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (ctx) => NewExpense(onAddExpense: _addExpense),
+    );
+  }
+
+  void _chartModal() {
+    showModalBottomSheet(
+      context: context,
+      builder: (ctx) => Chart(
+        expenses: _registeredExpenses,
+        dataAvailable: _registeredExpenses.isNotEmpty,
+      ),
     );
   }
 
@@ -43,19 +53,28 @@ class _AppState extends State<App> {
       appBar: AppBar(
         title: Text(
           'Kharcha',
-          style: GoogleFonts.comicNeue(
-            fontSize: 34,
-            fontWeight: FontWeight.w600,
-          ),
+          style: Theme.of(context).textTheme.displaySmall,
         ),
         actions: [
           Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: IconButton(
+              onPressed: _chartModal,
+              icon: Icon(
+                Icons.bar_chart,
+                size: 30,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+          Padding(
             padding: const EdgeInsets.all(4),
             child: IconButton(
-              onPressed: _showModal,
-              icon: const Icon(
-                Icons.add,
+              onPressed: _addExpenseModal,
+              icon: Icon(
+                Icons.add_rounded,
                 size: 34,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
@@ -63,11 +82,11 @@ class _AppState extends State<App> {
       ),
       body: Column(
         children: [
-          const Text('List Items'),
           Expanded(
             child: ExpensesList(
               expenses: _registeredExpenses,
               onRemoveExpense: _removeExpense,
+              dataAvailable: _registeredExpenses.isNotEmpty,
             ),
           ),
         ],
