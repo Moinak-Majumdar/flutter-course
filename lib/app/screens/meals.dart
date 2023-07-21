@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:yumyum/app/models/meal.dart';
 import 'package:yumyum/app/widget/meal_card.dart';
 
-class Meals extends StatelessWidget {
-  const Meals({super.key, required this.title, required this.meals});
+class MealsScreen extends StatelessWidget {
+  const MealsScreen({
+    super.key,
+    this.title,
+    required this.meals,
+    required this.onToggleFavorite,
+  });
 
-  final String title;
+  final String? title;
   final List<Meal> meals;
+  final void Function(Meal m) onToggleFavorite;
 
   @override
   Widget build(context) {
@@ -17,18 +23,26 @@ class Meals extends StatelessWidget {
         itemCount: meals.length,
         itemBuilder: (ctx, i) => Container(
           padding: const EdgeInsets.all(16),
-          child: Mealcard(meal: meals[i]),
+          child: MealCard(
+            meal: meals[i],
+            onToggleFavorite: onToggleFavorite,
+          ),
         ),
       );
     } else {
       content = const NoMeals();
     }
 
-    return Scaffold(
+    if (title == null) {
+      return content;
+    } else {
+      return Scaffold(
         appBar: AppBar(
-          title: Text(title),
+          title: Text(title!),
         ),
-        body: content);
+        body: content,
+      );
+    }
   }
 }
 

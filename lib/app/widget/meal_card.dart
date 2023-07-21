@@ -4,10 +4,12 @@ import 'package:yumyum/app/models/meal.dart';
 import 'package:yumyum/app/screens/meal_details.dart';
 import 'package:yumyum/app/widget/icon_with_text.dart';
 
-class Mealcard extends StatelessWidget {
-  const Mealcard({super.key, required this.meal});
+class MealCard extends StatelessWidget {
+  const MealCard(
+      {super.key, required this.meal, required this.onToggleFavorite});
 
   final Meal meal;
+  final void Function(Meal m) onToggleFavorite;
 
   String get complexityText {
     return meal.complexity.name[0].toUpperCase() +
@@ -22,7 +24,10 @@ class Mealcard extends StatelessWidget {
   void _pageChanger(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => MealDetails(meal: meal),
+        builder: (ctx) => MealDetails(
+          meal: meal,
+          onToggleFavorite: onToggleFavorite,
+        ),
       ),
     );
   }

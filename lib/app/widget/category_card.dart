@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:yumyum/app/data/dummy.dart';
+// import 'package:yumyum/app/data/dummy.dart';
 import 'package:yumyum/app/models/category.dart';
 // import 'package:yumyum/app/models/meal.dart';
 import 'package:yumyum/app/screens/meals.dart';
+import 'package:yumyum/app/models/meal.dart';
 
 class CategoryCard extends StatelessWidget {
-  const CategoryCard({super.key, required this.category});
+  const CategoryCard(
+      {super.key,
+      required this.category,
+      required this.onToggleFavorite,
+      required this.availableMeal});
 
   final Category category;
+  final void Function(Meal m) onToggleFavorite;
+  final List<Meal> availableMeal;
 
   void _pageChanger(BuildContext context) {
-    final filterMeals = dummyMeals
+    final filterMeals = availableMeal
         .where((element) => element.categories.contains(category.id))
         .toList();
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (ctx) => Meals(title: category.title, meals: filterMeals),
+        builder: (ctx) => MealsScreen(
+          title: category.title,
+          meals: filterMeals,
+          onToggleFavorite: onToggleFavorite,
+        ),
       ),
     );
   }
