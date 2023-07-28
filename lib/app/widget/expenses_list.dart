@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kharcha/app/widget/expense_card.dart';
 import 'package:kharcha/models/expense.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kharcha/provider/expense_provider.dart';
 
-class ExpensesList extends StatelessWidget {
-  const ExpensesList(
-      {super.key,
-      required this.expenses,
-      required this.onRemoveExpense,
-      required this.dataAvailable});
-
-  final List<Expense> expenses;
-  final bool dataAvailable;
-  final void Function(Expense e) onRemoveExpense;
+class ExpensesList extends ConsumerWidget {
+  const ExpensesList({super.key});
 
   @override
-  Widget build(context) {
+  Widget build(context, WidgetRef ref) {
+    final List<Expense> expenses = ref.watch(expenseProviderWithMemory);
+    final bool dataAvailable = expenses.isNotEmpty;
+
     return dataAvailable
         ? ListView.builder(
             itemCount: expenses.length,
@@ -32,6 +29,7 @@ class ExpensesList extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
+                        const SizedBox(height: 12),
                         Text(
                             "Do you want to delete `${expenses[index].title}`?"),
                         const SizedBox(height: 8),
@@ -52,7 +50,9 @@ class ExpensesList extends StatelessWidget {
                       ),
                       TextButton(
                         onPressed: () {
-                          onRemoveExpense(expenses[index]);
+                          ref
+                              .read(expenseProvider.notifier)
+                              .removeExpense(expenses[index]);
                           Navigator.of(ctx).pop(true);
                         },
                         child: Text(
@@ -74,13 +74,16 @@ class ExpensesList extends StatelessWidget {
             height: double.infinity,
             child: Align(
               alignment: Alignment.center,
-              child: Text(
-                'List is not available, Add Kharcha to view list',
-                style: GoogleFonts.comicNeue(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.primary),
-                textAlign: TextAlign.center,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Text(
+                  'No kharcha is found, Try adding some!',
+                  style: GoogleFonts.comicNeue(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.primary),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
           );

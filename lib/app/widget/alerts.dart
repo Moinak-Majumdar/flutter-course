@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,7 +9,7 @@ class FailedAlert extends StatelessWidget {
 
   @override
   Widget build(context) {
-    return AlertDialog(
+    return CupertinoAlertDialog(
       title: Text(
         'Invalid input',
         style: Theme.of(context).textTheme.bodyLarge,
@@ -34,30 +35,22 @@ class SuccessAlert extends StatelessWidget {
 
   @override
   Widget build(context) {
-    return Dialog(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(8, 32, 8, 8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'New Kharcha added.',
-              style: GoogleFonts.comicNeue(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 15),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(buildCtx);
-              },
-              child: const Text('Close'),
-            ),
-          ],
+    return CupertinoAlertDialog(
+      title: Text(
+        'New Kharcha added.',
+        style: GoogleFonts.comicNeue(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
         ),
       ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(buildCtx);
+          },
+          child: const Text('Close'),
+        ),
+      ],
     );
   }
 }

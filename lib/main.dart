@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kharcha/app/app.dart';
 
 void main() {
-  runApp(const MyApp());
+  // hl3 force to potrait mode
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations(
+  //         [DeviceOrientation.portraitUp])
+  //     .then((fn) {
+  //   runApp(const ProviderScope(child: MyApp(),),);
+  // });
+  // hl3 responsive mode
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
 final lightScheme = ColorScheme.fromSeed(

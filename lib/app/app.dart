@@ -1,51 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:kharcha/app/widget/expenses_list.dart';
 import 'package:kharcha/app/widget/new_expense.dart';
-import 'package:kharcha/models/expense.dart';
-// import 'package:kharcha/data/dataList.dart';
 import 'package:kharcha/app/widget/chart/chart.dart';
 
-class App extends StatefulWidget {
+class App extends StatelessWidget {
   const App({super.key});
-
-  @override
-  State<App> createState() {
-    return _AppState();
-  }
-}
-
-class _AppState extends State<App> {
-  final List<Expense> _registeredExpenses = [];
-
-  void _addExpenseModal() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (ctx) => NewExpense(onAddExpense: _addExpense),
-    );
-  }
-
-  void _chartModal() {
-    showModalBottomSheet(
-      context: context,
-      builder: (ctx) => Chart(
-        expenses: _registeredExpenses,
-        dataAvailable: _registeredExpenses.isNotEmpty,
-      ),
-    );
-  }
-
-  void _addExpense(Expense e) {
-    setState(() {
-      _registeredExpenses.add(e);
-    });
-  }
-
-  void _removeExpense(Expense e) {
-    setState(() {
-      _registeredExpenses.remove(e);
-    });
-  }
 
   @override
   Widget build(context) {
@@ -59,7 +18,9 @@ class _AppState extends State<App> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: IconButton(
-              onPressed: _chartModal,
+              onPressed: () {
+                _chartModal(context);
+              },
               icon: Icon(
                 Icons.bar_chart,
                 size: 30,
@@ -70,7 +31,9 @@ class _AppState extends State<App> {
           Padding(
             padding: const EdgeInsets.all(4),
             child: IconButton(
-              onPressed: _addExpenseModal,
+              onPressed: () {
+                _addExpenseModal(context);
+              },
               icon: Icon(
                 Icons.add_rounded,
                 size: 34,
@@ -80,17 +43,32 @@ class _AppState extends State<App> {
           ),
         ],
       ),
-      body: Column(
+      body: const Column(
         children: [
           Expanded(
-            child: ExpensesList(
-              expenses: _registeredExpenses,
-              onRemoveExpense: _removeExpense,
-              dataAvailable: _registeredExpenses.isNotEmpty,
-            ),
+            child: ExpensesList(),
           ),
         ],
       ),
     );
   }
+}
+
+void _addExpenseModal(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    // constraints: const BoxConstraints(
+    //   minWidth: double.infinity,
+    // ),
+    isScrollControlled: true,
+    useSafeArea: true,
+    builder: (ctx) => const NewExpense(),
+  );
+}
+
+void _chartModal(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    builder: (ctx) => const Chart(),
+  );
 }

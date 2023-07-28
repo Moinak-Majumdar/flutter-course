@@ -1,20 +1,21 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kharcha/models/expense.dart';
+import 'package:kharcha/provider/expense_provider.dart';
 import 'alerts.dart';
 
-class NewExpense extends StatefulWidget {
-  const NewExpense({super.key, required this.onAddExpense});
-
-  final void Function(Expense e) onAddExpense;
+class NewExpense extends ConsumerStatefulWidget {
+  const NewExpense({super.key});
 
   @override
-  State<NewExpense> createState() {
+  ConsumerState<NewExpense> createState() {
     return _NewExpenseState();
   }
 }
 
-class _NewExpenseState extends State<NewExpense> {
+class _NewExpenseState extends ConsumerState<NewExpense> {
   final _title = TextEditingController();
   final _amount = TextEditingController();
   DateTime? _date;
@@ -47,21 +48,23 @@ class _NewExpenseState extends State<NewExpense> {
     final validTitle = _title.text.trim().isEmpty;
 
     if (validAmount || validDate || validTitle) {
-      showDialog(
+      // showDialog(
+      //   context: context,
+      //   builder: (ctx) => FailedAlert(buildCtx: ctx),
+      // );
+      showCupertinoDialog(
         context: context,
         builder: (ctx) => FailedAlert(buildCtx: ctx),
       );
       return;
     } else {
-      widget.onAddExpense(
-        Expense(
-          amount: enteredAmount,
-          date: _date!,
-          title: _title.text,
-          category: _selectedCategory,
-        ),
-      );
-      showDialog(
+      ref.read(expenseProvider.notifier).addExpense(Expense(
+            amount: enteredAmount,
+            date: _date!,
+            title: _title.text,
+            category: _selectedCategory,
+          ));
+      showCupertinoDialog(
         context: context,
         builder: (ctx) => SuccessAlert(buildCtx: ctx),
       ).then((value) {
@@ -79,46 +82,86 @@ class _NewExpenseState extends State<NewExpense> {
 
   @override
   Widget build(context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 48, 20, 20),
-      child: Column(
+    final Widget decisionWidget = Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          GetTitle(titleController: _title),
-          Row(
-            children: [
-              GetDate(date: _date, datePicker: _pickDate),
-              const SizedBox(width: 16),
-              GetAmount(amountController: _amount)
-            ],
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text('CANCEL'),
           ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              PickCategory(
-                selectedCategory: _selectedCategory,
-                changeCategory: changeCategory,
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Cancel'),
-                    ),
-                    ElevatedButton(
-                      onPressed: handelSubmit,
-                      child: const Text('Save'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          ElevatedButton(
+            onPressed: handelSubmit,
+            child: const Text('SAVE'),
           ),
         ],
       ),
+    );
+
+    return LayoutBuilder(
+      builder: (ctx, constraints) {
+        final width = constraints.maxWidth;
+
+        return Padding(
+          padding: width <= 600
+              ? const EdgeInsets.all(20)
+              : const EdgeInsets.fromLTRB(20, 10, 20, 20),
+          child: Column(
+            children: [
+              if (width >= 600)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: width * 0.6,
+                      child: GetTitle(titleController: _title),
+                    ),
+                    const SizedBox(width: 16),
+                    GetAmount(amountController: _amount),
+                  ],
+                )
+              else
+                GetTitle(titleController: _title),
+              if (width >= 600)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    children: [
+                      GetDate(date: _date, datePicker: _pickDate),
+                      const SizedBox(width: 16),
+                      PickCategory(
+                        selectedCategory: _selectedCategory,
+                        changeCategory: changeCategory,
+                      ),
+                      decisionWidget,
+                    ],
+                  ),
+                )
+              else
+                Row(
+                  children: [
+                    GetDate(date: _date, datePicker: _pickDate),
+                    const SizedBox(width: 16),
+                    GetAmount(amountController: _amount)
+                  ],
+                ),
+              const SizedBox(height: 16),
+              if (width <= 600)
+                Row(
+                  children: [
+                    PickCategory(
+                      selectedCategory: _selectedCategory,
+                      changeCategory: changeCategory,
+                    ),
+                    decisionWidget,
+                  ],
+                ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
@@ -134,15 +177,18 @@ class GetTitle extends StatelessWidget {
   Widget build(context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: 'Expense short description.',
-          hintStyle: Theme.of(context).textTheme.bodySmall,
-          label: const Text('Title'),
-          // border: OutlineInputBorder(),
+      child: Expanded(
+        child: TextField(
+          decoration: InputDecoration(
+            hintText: 'Expense short description.',
+            hintStyle: Theme.of(context).textTheme.bodySmall,
+            label: const Text('Title'),
+            // border: OutlineInputBorder(),
+          ),
+          maxLength: 50,
+          textCapitalization: TextCapitalization.sentences,
+          controller: titleController,
         ),
-        maxLength: 50,
-        controller: titleController,
       ),
     );
   }
@@ -156,7 +202,8 @@ class GetDate extends StatelessWidget {
 
   @override
   Widget build(context) {
-    return Expanded(
+    return SizedBox(
+      width: 160,
       child: Row(
         children: [
           Expanded(

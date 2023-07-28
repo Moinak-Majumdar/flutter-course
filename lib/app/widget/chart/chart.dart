@@ -1,48 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:kharcha/provider/expense_provider.dart';
 import 'chart_bar.dart';
 import 'package:kharcha/models/expense.dart';
 
-class Chart extends StatelessWidget {
-  const Chart({super.key, required this.expenses, required this.dataAvailable});
+List<ExpenseBucket> buckets(List<Expense> expenses) {
+  return [
+    ExpenseBucket.forCategory(expenses, Category.drinks),
+    ExpenseBucket.forCategory(expenses, Category.electricity),
+    ExpenseBucket.forCategory(expenses, Category.food),
+    ExpenseBucket.forCategory(expenses, Category.gas),
+    ExpenseBucket.forCategory(expenses, Category.gym),
+    ExpenseBucket.forCategory(expenses, Category.houseRent),
+    ExpenseBucket.forCategory(expenses, Category.internet),
+    ExpenseBucket.forCategory(expenses, Category.leisure),
+    ExpenseBucket.forCategory(expenses, Category.savings),
+    ExpenseBucket.forCategory(expenses, Category.shopping),
+    ExpenseBucket.forCategory(expenses, Category.study),
+    ExpenseBucket.forCategory(expenses, Category.travel),
+    ExpenseBucket.forCategory(expenses, Category.unknown),
+    ExpenseBucket.forCategory(expenses, Category.work),
+  ];
+}
 
-  final List<Expense> expenses;
-  final bool dataAvailable;
+double maxTotalExpense(List<Expense> expenses) {
+  double maxTotalExpense = 0;
 
-  List<ExpenseBucket> get buckets {
-    return [
-      ExpenseBucket.forCategory(expenses, Category.drinks),
-      ExpenseBucket.forCategory(expenses, Category.electricity),
-      ExpenseBucket.forCategory(expenses, Category.food),
-      ExpenseBucket.forCategory(expenses, Category.gas),
-      ExpenseBucket.forCategory(expenses, Category.gym),
-      ExpenseBucket.forCategory(expenses, Category.houseRent),
-      ExpenseBucket.forCategory(expenses, Category.internet),
-      ExpenseBucket.forCategory(expenses, Category.leisure),
-      ExpenseBucket.forCategory(expenses, Category.savings),
-      ExpenseBucket.forCategory(expenses, Category.shopping),
-      ExpenseBucket.forCategory(expenses, Category.study),
-      ExpenseBucket.forCategory(expenses, Category.travel),
-      ExpenseBucket.forCategory(expenses, Category.unknown),
-      ExpenseBucket.forCategory(expenses, Category.work),
-    ];
-  }
-
-  double get maxTotalExpense {
-    double maxTotalExpense = 0;
-
-    for (final bucket in buckets) {
-      if (bucket.totalExpense > maxTotalExpense) {
-        maxTotalExpense = bucket.totalExpense;
-      }
+  for (final bucket in buckets(expenses)) {
+    if (bucket.totalExpense > maxTotalExpense) {
+      maxTotalExpense = bucket.totalExpense;
     }
-
-    return maxTotalExpense;
   }
+
+  return maxTotalExpense;
+}
+
+class Chart extends ConsumerWidget {
+  const Chart({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final expenses = ref.watch(expenseProviderWithMemory);
+    final dataAvailable = expenses.isNotEmpty;
+
     final isDarkMode =
         MediaQuery.of(context).platformBrightness == Brightness.dark;
     return Container(
@@ -71,18 +72,19 @@ class Chart extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      for (final bucket in buckets) // alternative to map()
+                      for (final bucket
+                          in buckets(expenses)) // alternative to map()
                         ChartBar(
                           fill: bucket.totalExpense == 0
                               ? 0.001
-                              : bucket.totalExpense / maxTotalExpense,
+                              : bucket.totalExpense / maxTotalExpense(expenses),
                         )
                     ],
                   ),
                 ),
                 const SizedBox(height: 12),
                 Row(
-                  children: buckets
+                  children: buckets(expenses)
                       .map(
                         (bucket) => Expanded(
                           child: Padding(

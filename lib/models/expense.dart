@@ -54,12 +54,18 @@ class Expense {
       required this.title,
       required this.category})
       : id = _uuid.v4();
-
   final String id;
   final String title;
   final double amount;
   final DateTime date;
   final Category category;
+
+  Expense.reInitialize(
+      {required this.id,
+      required this.title,
+      required this.amount,
+      required this.category,
+      required this.date});
 }
 
 class ExpenseBucket {
