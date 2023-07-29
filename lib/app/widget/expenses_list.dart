@@ -5,12 +5,18 @@ import 'package:kharcha/models/expense.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kharcha/provider/expense_provider.dart';
 
+bool _memoryFlag = true;
+
 class ExpensesList extends ConsumerWidget {
   const ExpensesList({super.key});
 
   @override
   Widget build(context, WidgetRef ref) {
-    final List<Expense> expenses = ref.watch(expenseProviderWithMemory);
+    if (_memoryFlag) {
+      ref.read(expenseProvider.notifier).memoryInitialize();
+      _memoryFlag = false;
+    }
+    final List<Expense> expenses = ref.watch(expenseProvider);
     final bool dataAvailable = expenses.isNotEmpty;
 
     return dataAvailable
@@ -51,7 +57,7 @@ class ExpensesList extends ConsumerWidget {
                       TextButton(
                         onPressed: () {
                           ref
-                              .read(expenseProvider.notifier)
+                              .watch(expenseProvider.notifier)
                               .removeExpense(expenses[index]);
                           Navigator.of(ctx).pop(true);
                         },
@@ -70,22 +76,31 @@ class ExpensesList extends ConsumerWidget {
               child: ExpenseCard(expenses[index]),
             ),
           )
-        : SizedBox(
-            height: double.infinity,
-            child: Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Text(
-                  'No kharcha is found, Try adding some!',
-                  style: GoogleFonts.comicNeue(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(context).colorScheme.primary),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
-          );
+        : const NoItems();
+  }
+}
+
+class NoItems extends StatelessWidget {
+  const NoItems({super.key});
+
+  @override
+  Widget build(context) {
+    return SizedBox(
+      height: double.infinity,
+      child: Align(
+        alignment: Alignment.center,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: Text(
+            'No kharcha is found, Try adding some!',
+            style: GoogleFonts.comicNeue(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.primary),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
   }
 }

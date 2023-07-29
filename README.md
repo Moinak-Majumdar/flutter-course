@@ -1,6 +1,6 @@
 # kharcha
 
-### Expense tracker app.
+### Expense tracker app with flutter_riverpod and shared_preference.
 
 ## Getting Started
 

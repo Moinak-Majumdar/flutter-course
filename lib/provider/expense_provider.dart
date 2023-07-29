@@ -23,32 +23,38 @@ void manipulateExpenseMemory(List<Expense> expenses) async {
   await prefs.setStringList('expenseList', expensesToStringList);
 }
 
+Future<List<Expense>> initializeMemory() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final memory = prefs.getStringList('expenseList');
+
+  final List<Expense> expensesList = [];
+
+  if (memory != null && memory.isNotEmpty) {
+    for (final m in memory) {
+      final Map<String, dynamic> map = jsonDecode(m);
+      expensesList.add(
+        Expense.reInitialize(
+          amount: double.tryParse(map['amount']!) ?? 0,
+          date: DateTime.parse(map['date']!),
+          title: map['title']!,
+          category: Category.values.firstWhere((element) =>
+              element.toString() == "Category." + map['category']!),
+          id: map['id']!,
+        ),
+      );
+    }
+  }
+
+  return expensesList;
+}
+
 class ExpenseNotifier extends StateNotifier<List<Expense>> {
   ExpenseNotifier() : super([]);
 
-  void initializeMemory() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final memory = prefs.getStringList('expenseList');
-
-    final List<Expense> expensesList = [];
-
-    if (memory != null && memory.isNotEmpty) {
-      for (final m in memory) {
-        final Map<String, dynamic> map = jsonDecode(m);
-        expensesList.add(
-          Expense.reInitialize(
-            amount: double.tryParse(map['amount']!) ?? 0,
-            date: DateTime.parse(map['date']!),
-            title: map['title']!,
-            category: Category.values.firstWhere((element) =>
-                element.toString() == "Category." + map['category']!),
-            id: map['id']!,
-          ),
-        );
-      }
-    }
-
-    state = [...expensesList];
+  void memoryInitialize() {
+    initializeMemory().then((value) {
+      state = value;
+    });
   }
 
   void addExpense(Expense e) {
@@ -58,7 +64,6 @@ class ExpenseNotifier extends StateNotifier<List<Expense>> {
 
   void removeExpense(Expense e) {
     state = state.where((element) => element.id != e.id).toList();
-    print('dismiss');
     manipulateExpenseMemory(state);
   }
 }
@@ -66,9 +71,3 @@ class ExpenseNotifier extends StateNotifier<List<Expense>> {
 final expenseProvider = StateNotifierProvider<ExpenseNotifier, List<Expense>>(
   (ref) => ExpenseNotifier(),
 );
-
-final expenseProviderWithMemory = Provider<List<Expense>>((ref) {
-  ref.read(expenseProvider.notifier).initializeMemory();
-
-  return ref.watch(expenseProvider);
-});

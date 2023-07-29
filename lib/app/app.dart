@@ -43,7 +43,7 @@ class App extends StatelessWidget {
           ),
         ],
       ),
-      body: const Column(
+      body: Column(
         children: [
           Expanded(
             child: ExpensesList(),
