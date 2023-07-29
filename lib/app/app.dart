@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kharcha/app/widget/expenses_list.dart';
+import 'package:kharcha/app/screens/add_expense.dart';
+import 'package:kharcha/app/screens/expenses_list.dart';
 import 'package:kharcha/app/widget/new_expense.dart';
 import 'package:kharcha/app/widget/chart/chart.dart';
 
@@ -43,7 +44,7 @@ class App extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
+      body: const Column(
         children: [
           Expanded(
             child: ExpensesList(),
@@ -55,14 +56,19 @@ class App extends StatelessWidget {
 }
 
 void _addExpenseModal(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    // constraints: const BoxConstraints(
-    //   minWidth: double.infinity,
-    // ),
-    isScrollControlled: true,
-    useSafeArea: true,
-    builder: (ctx) => const NewExpense(),
+  // showModalBottomSheet(
+  //   context: context,
+  //   // constraints: const BoxConstraints(
+  //   //   minWidth: double.infinity,
+  //   // ),
+  //   isScrollControlled: true,
+  //   useSafeArea: true,
+  //   builder: (ctx) => const NewExpense(),
+  // );
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (ctx) => const AddExpense(),
+    ),
   );
 }
 
