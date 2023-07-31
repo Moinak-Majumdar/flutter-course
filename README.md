@@ -1,6 +1,6 @@
 # shopping_list
 
-A new Flutter project.
+Shopping list add with app wide state riverpod and firebase realtime shared database.
 
 ## Getting Started
 
