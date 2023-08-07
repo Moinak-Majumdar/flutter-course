@@ -96,12 +96,12 @@ class LocationInputState extends State<LocationInput> {
       iconPackModes: <IconPack>[IconPack.custom],
       showSearchBar: false,
       title: Text(
-        'Select a marker',
+        'Select a marker !',
         style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-              color: Theme.of(context).colorScheme.onBackground,
+              color: Colors.white70,
             ),
       ),
-      backgroundColor: Theme.of(context).colorScheme.scrim,
+      backgroundColor: Theme.of(context).colorScheme.onSecondary,
       iconSize: 50,
       iconColor: Theme.of(context).colorScheme.secondary,
     );
@@ -120,8 +120,11 @@ class LocationInputState extends State<LocationInput> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Marker color.'),
-        backgroundColor: Theme.of(context).colorScheme.scrim,
+        title: const Text(
+          'Marker color !',
+          style: TextStyle(color: Colors.white70),
+        ),
+        backgroundColor: Theme.of(context).colorScheme.onSecondary,
         content: SingleChildScrollView(
           child: BlockPicker(
             pickerColor: pickerColor,
@@ -133,8 +136,9 @@ class LocationInputState extends State<LocationInput> {
           ),
         ),
         actions: [
-          ElevatedButton(
-            child: const Text('Got it'),
+          TextButton.icon(
+            icon: const Icon(Icons.done_all),
+            label: const Text('Got it'),
             onPressed: () {
               setState(() {
                 _pickedMarker = PlaceMarker.byMarker(
@@ -173,8 +177,9 @@ class LocationInputState extends State<LocationInput> {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.blueGrey.withOpacity(.9),
-                Colors.blue.withOpacity(.2),
+                Colors.blueGrey,
+                Colors.deepPurple,
+                Theme.of(context).colorScheme.onSecondary
               ],
             ),
           ),
@@ -199,7 +204,7 @@ class LocationInputState extends State<LocationInput> {
                   padding: const EdgeInsets.only(
                     top: 4,
                     bottom: 4,
-                    left: 8,
+                    left: 10,
                     right: 4,
                   ),
                   margin: const EdgeInsets.only(top: 16),

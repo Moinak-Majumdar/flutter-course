@@ -4,7 +4,6 @@ import 'package:favorite_place/app/widgets/location_input.dart';
 import 'package:favorite_place/app/widgets/validation_alerts.dart';
 import 'package:favorite_place/models/place.dart';
 import 'package:favorite_place/provider/place_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,17 +25,15 @@ class _NewPlaceState extends ConsumerState<NewPlace> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       if (_selectedImage == null) {
-        showCupertinoDialog(
-            context: context, builder: (ctx) => ImageAlert(ctx));
+        showDialog(context: context, builder: (ctx) => ImageAlert(ctx));
         return;
       }
       if (_pickedLocation == null) {
-        showCupertinoDialog(
-            context: context, builder: (ctx) => LocationAlert(ctx));
+        showDialog(context: context, builder: (ctx) => LocationAlert(ctx));
         return;
       }
       if (_selectedMarker == null) {
-        showCupertinoDialog(context: context, builder: (ctx) => IconAlert(ctx));
+        showDialog(context: context, builder: (ctx) => IconAlert(ctx));
         return;
       }
       ref.read(placeProvider.notifier).addPlace(

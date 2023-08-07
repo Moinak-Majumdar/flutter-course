@@ -1,7 +1,6 @@
 import 'package:favorite_place/app/screen/place_details.dart';
 import 'package:favorite_place/models/place.dart';
 import 'package:favorite_place/provider/place_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,9 +14,10 @@ class PlaceCard extends ConsumerWidget {
       padding: const EdgeInsets.only(bottom: 4),
       child: Dismissible(
         key: ValueKey(place.id),
-        confirmDismiss: (dir) => showCupertinoDialog(
+        confirmDismiss: (dir) => showDialog(
           context: context,
-          builder: (ctx) => CupertinoAlertDialog(
+          builder: (ctx) => AlertDialog(
+            backgroundColor: Theme.of(context).colorScheme.onSecondary,
             title: const Text('Confirmation'),
             content: Text('Do you wan to delete : ${place.title} ?'),
             actions: [
@@ -40,7 +40,7 @@ class PlaceCard extends ConsumerWidget {
                   Navigator.of(ctx).pop();
                 },
                 child: Text(
-                  'CANCEL',
+                  'DELETE',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.error,
                   ),
@@ -57,25 +57,25 @@ class PlaceCard extends ConsumerWidget {
               ),
             );
           },
-          leading: Hero(
-            tag: place.id,
-            child: Container(
-              clipBehavior: Clip.hardEdge,
-              width: 60,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(35),
-                ),
+          leading: Container(
+            clipBehavior: Clip.hardEdge,
+            width: 60,
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
               ),
-              child: Image.file(
-                place.thumbNail,
-                fit: BoxFit.cover,
-              ),
+            ),
+            child: Image.file(
+              place.thumbNail,
+              fit: BoxFit.cover,
             ),
           ),
           title: Text(
             place.title,
-            style: Theme.of(context).textTheme.headlineSmall,
+            style: Theme.of(context)
+                .textTheme
+                .headlineSmall!
+                .copyWith(color: Colors.cyan),
           ),
           subtitle: Text(
             place.location.locality,
@@ -83,12 +83,15 @@ class PlaceCard extends ConsumerWidget {
                   color: Theme.of(context).colorScheme.onBackground,
                 ),
           ),
-          trailing: CircleAvatar(
-            backgroundColor: Colors.white,
-            child: Icon(
-              place.marker.icon,
-              size: 30,
-              color: place.marker.iconColor,
+          trailing: Hero(
+            tag: place.id,
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: Icon(
+                place.marker.icon,
+                size: 30,
+                color: place.marker.iconColor,
+              ),
             ),
           ),
         ),

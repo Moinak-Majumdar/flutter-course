@@ -48,7 +48,7 @@ class ImageInputState extends State<ImageInput> {
     return Container(
       alignment: Alignment.center,
       margin: const EdgeInsets.only(top: 16),
-      height: 250,
+      height: 300,
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(

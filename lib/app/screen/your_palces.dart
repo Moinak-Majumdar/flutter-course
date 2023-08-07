@@ -47,7 +47,9 @@ class _YourPlacesState extends ConsumerState<YourPlaces> {
         future: _placesDb,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           }
           if (placeList.isEmpty) {
             return const NoPlace();

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ImageAlert extends StatelessWidget {
@@ -7,8 +6,14 @@ class ImageAlert extends StatelessWidget {
 
   @override
   Widget build(context) {
-    return CupertinoAlertDialog(
-      title: const Text('Attention !'),
+    return AlertDialog(
+      backgroundColor: Theme.of(context).colorScheme.scrim,
+      title: Text(
+        'Attention !',
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.tertiary,
+        ),
+      ),
       content: const Text('Please take / upload an image.'),
       actions: [
         TextButton(
@@ -28,8 +33,14 @@ class LocationAlert extends StatelessWidget {
 
   @override
   Widget build(context) {
-    return CupertinoAlertDialog(
-      title: const Text('Attention !'),
+    return AlertDialog(
+      backgroundColor: Theme.of(context).colorScheme.scrim,
+      title: Text(
+        'Attention !',
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.tertiary,
+        ),
+      ),
       content: const Text('Please add location of current place.'),
       actions: [
         TextButton(
@@ -49,8 +60,14 @@ class IconAlert extends StatelessWidget {
 
   @override
   Widget build(context) {
-    return CupertinoAlertDialog(
-      title: const Text('Attention !'),
+    return AlertDialog(
+      backgroundColor: Theme.of(context).colorScheme.scrim,
+      title: Text(
+        'Attention !',
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.tertiary,
+        ),
+      ),
       content: const Text('Please select a marker icon.'),
       actions: [
         TextButton(

@@ -9,7 +9,7 @@ const Map<String, IconData> _available = {
   'Hospital': Icons.local_hospital,
   'Airport': Icons.flight_takeoff,
   'Apartment': Icons.apartment_rounded,
-  'Bath House': Icons.bathtub_rounded,
+  'Washroom': Icons.wc,
   'Blood Bank': Icons.bloodtype_rounded,
   'Garage': Icons.car_repair,
   'Castle': Icons.castle,
@@ -28,14 +28,24 @@ const Map<String, IconData> _available = {
   'Hotel': Icons.local_hotel,
   'Library': Icons.local_library_rounded,
   'Theater': Icons.movie_rounded,
-  'Unknown': Icons.pin_drop,
+  'Unknown': Icons.question_mark,
   'Beach': Icons.pool,
   'Restaurant': Icons.room_service,
   'Stadium': Icons.stadium,
   'Studio': Icons.video_camera_front_rounded,
   'Medical Shop': Icons.medication_liquid,
   'Office': Icons.work,
-  'Bank': Icons.account_balance
+  'Bank': Icons.account_balance,
+  'Salon': Icons.content_cut,
+  'Digital Store': Icons.devices_other,
+  'Power Station': Icons.flash_on,
+  'Park': Icons.park,
+  'Parking': Icons.local_parking,
+  'Postoffice': Icons.local_post_office,
+  'Laundry': Icons.local_laundry_service,
+  'Golf Course': Icons.golf_course,
+  'Farm': Icons.pets,
+  'Spa': Icons.spa
 };
 Map<String, IconData> get availableIcons {
   final entries = _available.entries.toList();

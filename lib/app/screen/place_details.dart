@@ -18,37 +18,35 @@ class PlaceDetails extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          Hero(
-            tag: place.id,
-            child: Image.file(
-              place.thumbNail,
-              height: double.infinity,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
+          Image.file(
+            place.thumbNail,
+            height: double.infinity,
+            width: double.infinity,
+            fit: BoxFit.cover,
           ),
           Positioned(
-              top: 10,
-              right: 10,
-              child: Container(
-                padding: const EdgeInsets.only(
-                  top: 4,
-                  bottom: 4,
-                  left: 8,
-                  right: 4,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  color:
-                      Theme.of(context).colorScheme.background.withOpacity(.6),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(place.marker.iconKey),
-                    const SizedBox(width: 8),
-                    CircleAvatar(
+            top: 10,
+            right: 10,
+            child: Container(
+              padding: const EdgeInsets.only(
+                top: 4,
+                bottom: 4,
+                left: 10,
+                right: 4,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                color: Theme.of(context).colorScheme.background.withOpacity(.6),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(place.marker.iconKey),
+                  const SizedBox(width: 8),
+                  Hero(
+                    tag: place.id,
+                    child: CircleAvatar(
                       backgroundColor: Colors.white,
                       radius: 24,
                       child: Icon(
@@ -57,9 +55,11 @@ class PlaceDetails extends StatelessWidget {
                         size: 30,
                       ),
                     ),
-                  ],
-                ),
-              )),
+                  ),
+                ],
+              ),
+            ),
+          ),
           Positioned(
             bottom: 0,
             left: 0,
