@@ -48,24 +48,21 @@ const categoryIcons = {
 };
 
 class Expense {
-  Expense(
-      {required this.amount,
-      required this.date,
-      required this.title,
-      required this.category})
-      : id = _uuid.v4();
+  Expense({
+    required this.amount,
+    required this.date,
+    required this.title,
+    required this.category,
+    String? id,
+  }) : id = id ?? _uuid.v4();
+
   final String id;
   final String title;
   final double amount;
   final DateTime date;
   final Category category;
 
-  Expense.reInitialize(
-      {required this.id,
-      required this.title,
-      required this.amount,
-      required this.category,
-      required this.date});
+  String get dbFriendlyId => id.replaceAll(RegExp('-'), '_');
 }
 
 class ExpenseBucket {

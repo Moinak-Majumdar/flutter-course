@@ -1,82 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kharcha/app/widget/expense_card.dart';
-import 'package:kharcha/models/expense.dart';
+import 'package:kharcha/app/widget/expense_list_item.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kharcha/provider/expense_provider.dart';
 
-bool _memoryFlag = true;
-
-class ExpensesList extends ConsumerWidget {
+class ExpensesList extends ConsumerStatefulWidget {
   const ExpensesList({super.key});
 
   @override
-  Widget build(context, WidgetRef ref) {
-    if (_memoryFlag) {
-      ref.read(expenseProvider.notifier).memoryInitialize();
-      _memoryFlag = false;
-    }
-    final List<Expense> expenses = ref.watch(expenseProvider);
-    final bool dataAvailable = expenses.isNotEmpty;
+  ConsumerState<ExpensesList> createState() => _ExpensesListState();
+}
 
-    return dataAvailable
-        ? ListView.builder(
-            itemCount: expenses.length,
-            itemBuilder: (context, index) => Dismissible(
-              confirmDismiss: (direction) {
-                return showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text(
-                      'Confirmation',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                    content: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(height: 12),
-                        Text(
-                            "Do you want to delete `${expenses[index].title}`?"),
-                        const SizedBox(height: 8),
-                        Text(
-                          "Created at : ${dateFormat(
-                            expenses[index].date,
-                            fullDay: true,
-                          )}",
-                        ),
-                      ],
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(ctx).pop(false);
-                        },
-                        child: const Text('CANCEL'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          ref
-                              .watch(expenseProvider.notifier)
-                              .removeExpense(expenses[index]);
-                          Navigator.of(ctx).pop(true);
-                        },
-                        child: Text(
-                          'DELETE',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.error,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-              key: ValueKey(expenses[index]),
-              child: ExpenseCard(expenses[index]),
-            ),
-          )
-        : const NoItems();
+class _ExpensesListState extends ConsumerState<ExpensesList> {
+  late Future<void> _futureProvider;
+
+  @override
+  void initState() {
+    _futureProvider = ref.read(expenseProvider.notifier).getMemoryItem();
+    super.initState();
+  }
+
+  @override
+  Widget build(context) {
+    final expenseList = ref.watch(expenseProvider);
+
+    return FutureBuilder(
+      future: _futureProvider,
+      builder: (context, snap) {
+        if (snap.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        if (expenseList.isEmpty) {
+          return const NoItems();
+        }
+        return ListView.builder(
+          itemCount: expenseList.length,
+          itemBuilder: (ctx, index) =>
+              ExpenseListItem(expense: expenseList[index]),
+        );
+      },
+    );
   }
 }
 

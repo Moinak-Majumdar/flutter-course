@@ -98,6 +98,8 @@ class _AddExpenseState extends ConsumerState<AddExpense> {
       ),
     );
 
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(

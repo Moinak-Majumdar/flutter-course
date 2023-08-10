@@ -1,70 +1,53 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:kharcha/hive_model.dart';
 import 'package:kharcha/models/expense.dart';
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-
-void manipulateExpenseMemory(List<Expense> expenses) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final List<String> expensesToStringList = [];
-
-  for (final e in expenses) {
-    final Map<String, String> map = {
-      "id": e.id,
-      "amount": e.amount.toString(),
-      "category": e.category.name,
-      "date": e.date.toString(),
-      "title": e.title,
-    };
-    expensesToStringList.add(
-      jsonEncode(map),
-    );
-  }
-
-  await prefs.setStringList('expenseList', expensesToStringList);
-}
-
-Future<List<Expense>> initializeMemory() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  final memory = prefs.getStringList('expenseList');
-
-  final List<Expense> expensesList = [];
-
-  if (memory != null && memory.isNotEmpty) {
-    for (final m in memory) {
-      final Map<String, dynamic> map = jsonDecode(m);
-      expensesList.add(
-        Expense.reInitialize(
-          amount: double.tryParse(map['amount']!) ?? 0,
-          date: DateTime.parse(map['date']!),
-          title: map['title']!,
-          category: Category.values.firstWhere((element) =>
-              element.toString() == "Category." + map['category']!),
-          id: map['id']!,
-        ),
-      );
-    }
-  }
-
-  return expensesList;
-}
 
 class ExpenseNotifier extends StateNotifier<List<Expense>> {
   ExpenseNotifier() : super([]);
 
-  void memoryInitialize() {
-    initializeMemory().then((value) {
-      state = value;
-    });
+  final _hiveBoxName = 'records';
+
+  Future<void> getMemoryItem() async {
+    final box = await Hive.openBox<HiveModel>(_hiveBoxName);
+    // await box.clear();
+    final List<Expense> expenses = [];
+    for (int i = 0; i < box.length; i++) {
+      final item = box.getAt(i)!;
+      expenses.add(
+        Expense(
+          amount: item.amount,
+          date: item.date,
+          title: item.title,
+          category: Category.values.firstWhere(
+              (element) => element.toString() == "Category.${item.category}"),
+          id: item.id,
+        ),
+      );
+    }
+    state = expenses.reversed.toList();
   }
 
-  void addExpense(Expense e) {
-    state = [...state, e];
-    manipulateExpenseMemory(state);
+  void addExpense(Expense e) async {
+    state = [e, ...state];
+    final box = await Hive.openBox<HiveModel>(_hiveBoxName);
+    await box.put(
+      e.dbFriendlyId,
+      HiveModel(
+        id: e.dbFriendlyId,
+        title: e.title,
+        amount: e.amount,
+        category: e.category.name,
+        date: e.date,
+      ),
+    );
   }
 
-  void removeExpense(Expense e) {
+  void removeExpense(Expense e) async {
     state = state.where((element) => element.id != e.id).toList();
-    manipulateExpenseMemory(state);
+    final box = await Hive.openBox<HiveModel>(_hiveBoxName);
+    box.delete(e.dbFriendlyId);
   }
 }
 

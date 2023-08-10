@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kharcha/app/screens/add_expense.dart';
 import 'package:kharcha/app/screens/expenses_list.dart';
-import 'package:kharcha/app/widget/new_expense.dart';
+import 'package:kharcha/app/screens/new_expense.dart';
 import 'package:kharcha/app/widget/chart/chart.dart';
 
 class App extends StatelessWidget {
@@ -13,14 +12,21 @@ class App extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Kharcha',
-          style: Theme.of(context).textTheme.displaySmall,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.primary,
+            fontWeight: FontWeight.w600,
+            fontSize: 26,
+          ),
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: IconButton(
               onPressed: () {
-                _chartModal(context);
+                showModalBottomSheet(
+                  context: context,
+                  builder: (ctx) => const Chart(),
+                );
               },
               icon: Icon(
                 Icons.bar_chart,
@@ -33,7 +39,11 @@ class App extends StatelessWidget {
             padding: const EdgeInsets.all(4),
             child: IconButton(
               onPressed: () {
-                _addExpenseModal(context);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (ctx) => const NewExpense(),
+                  ),
+                );
               },
               icon: Icon(
                 Icons.add_rounded,
@@ -53,28 +63,4 @@ class App extends StatelessWidget {
       ),
     );
   }
-}
-
-void _addExpenseModal(BuildContext context) {
-  // showModalBottomSheet(
-  //   context: context,
-  //   // constraints: const BoxConstraints(
-  //   //   minWidth: double.infinity,
-  //   // ),
-  //   isScrollControlled: true,
-  //   useSafeArea: true,
-  //   builder: (ctx) => const NewExpense(),
-  // );
-  Navigator.of(context).push(
-    MaterialPageRoute(
-      builder: (ctx) => const AddExpense(),
-    ),
-  );
-}
-
-void _chartModal(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    builder: (ctx) => const Chart(),
-  );
 }

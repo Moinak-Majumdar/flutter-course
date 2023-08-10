@@ -52,6 +52,7 @@ class ExpenseCard extends StatelessWidget {
               children: [
                 Text(
                   "₹${expense.amount.toStringAsFixed(2)}",
+                  style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 const Spacer(),
                 Row(
@@ -68,7 +69,7 @@ class ExpenseCard extends StatelessWidget {
                       dateFormat(
                         expense.date,
                       ),
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ],
                 )

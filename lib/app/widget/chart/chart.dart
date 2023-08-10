@@ -36,17 +36,11 @@ double maxTotalExpense(List<Expense> expenses) {
   return maxTotalExpense;
 }
 
-bool _memoryFlag = true;
-
 class Chart extends ConsumerWidget {
   const Chart({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (_memoryFlag) {
-      ref.read(expenseProvider.notifier).memoryInitialize();
-      _memoryFlag = false;
-    }
     final expenses = ref.watch(expenseProvider);
     final dataAvailable = expenses.isNotEmpty;
 

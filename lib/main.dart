@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:kharcha/app/app.dart';
+import 'package:kharcha/hive_model.dart';
 
-void main() {
+void main() async {
   // hl3 force to potrait mode
   // WidgetsFlutterBinding.ensureInitialized();
   // SystemChrome.setPreferredOrientations(
@@ -12,6 +14,8 @@ void main() {
   //     .then((fn) {
   //   runApp(const ProviderScope(child: MyApp(),),);
   // });
+  await Hive.initFlutter();
+  Hive.registerAdapter(HiveModelAdapter());
   // hl3 responsive mode
   runApp(
     const ProviderScope(
@@ -26,7 +30,7 @@ final lightScheme = ColorScheme.fromSeed(
 
 final darkScheme = ColorScheme.fromSeed(
   brightness: Brightness.dark,
-  seedColor: const Color.fromARGB(255, 15, 23, 42),
+  seedColor: const Color.fromARGB(255, 167, 139, 250),
 );
 
 class MyApp extends StatelessWidget {
@@ -52,28 +56,18 @@ class MyApp extends StatelessWidget {
         iconTheme: const IconThemeData().copyWith(
           color: lightScheme.onSurfaceVariant,
         ),
-        textTheme: ThemeData().textTheme.copyWith(
-              displaySmall: GoogleFonts.comicNeue(
-                fontSize: 34,
-                fontWeight: FontWeight.w600,
-                color: lightScheme.primary,
-              ),
-              bodySmall: TextStyle(
-                color: lightScheme.onBackground,
-                fontSize: 12,
-              ),
-              bodyMedium: GoogleFonts.poppins(
-                color: lightScheme.onBackground,
-                fontSize: 14,
-              ),
-              bodyLarge: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
-              ),
-            ),
-        appBarTheme: const AppBarTheme().copyWith(
-          backgroundColor: lightScheme.onInverseSurface,
+        textTheme: GoogleFonts.kalamTextTheme().apply(
+          bodyColor: Colors.black,
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          helperStyle: TextStyle(
+            color: Colors.black87,
+            fontSize: 14,
+          ),
+          hintStyle: TextStyle(
+            color: Colors.black87,
+            fontSize: 14,
+          ),
         ),
       ),
       darkTheme: ThemeData.dark().copyWith(
@@ -81,38 +75,31 @@ class MyApp extends StatelessWidget {
         colorScheme: darkScheme,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: darkScheme.onPrimaryContainer,
-            foregroundColor: darkScheme.onPrimary,
+            backgroundColor: darkScheme.secondary,
+            foregroundColor: darkScheme.scrim,
           ),
         ),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-            foregroundColor: darkScheme.onPrimaryContainer,
+            foregroundColor: darkScheme.primary,
           ),
         ),
         iconTheme: const IconThemeData().copyWith(
-          color: darkScheme.onSurfaceVariant,
+          color: darkScheme.primary,
         ),
-        textTheme: ThemeData().textTheme.copyWith(
-              displaySmall: GoogleFonts.comicNeue(
-                fontSize: 34,
-                fontWeight: FontWeight.w600,
-                color: darkScheme.primary,
-              ),
-              bodySmall: TextStyle(
-                color: darkScheme.onBackground,
-                fontSize: 12,
-              ),
-              bodyMedium: GoogleFonts.poppins(
-                color: darkScheme.onBackground,
-                fontSize: 14,
-              ),
-              bodyLarge: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
+        textTheme: GoogleFonts.comicNeueTextTheme().apply(
+          bodyColor: Colors.white,
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          helperStyle: TextStyle(
+            color: Colors.white60,
+            fontSize: 14,
+          ),
+          hintStyle: TextStyle(
+            color: Colors.white60,
+            fontSize: 14,
+          ),
+        ),
       ),
       home: const App(),
     );
